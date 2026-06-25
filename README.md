@@ -78,10 +78,10 @@ src/
 └── InteractiveTaskManagerDemo.java
 
 src/test/java/org/example/
-├── smarthome/     # 11 test classes · ~154 tests
-├── coffeeshop/    # 10 test classes · ~176 tests
-├── taskmanager/   # 10 test classes · ~145 tests
-└── util/          #  1 test class  ·  ~44 tests
+├── smarthome/
+├── coffeeshop/
+├── taskmanager/
+└── util/
 ```
 
 ---
@@ -103,13 +103,6 @@ mvn exec:java -Dexec.mainClass=org.example.InteractiveTaskManagerDemo
 ## Tests
 
 519 JUnit 5 tests covering every class, interface, and edge case.
-
-| Package | Classes | Tests |
-|---|---|---|
-| `smarthome` | 11 | ~154 |
-| `coffeeshop` | 10 | ~176 |
-| `taskmanager` | 10 | ~145 |
-| `util` | 1 | ~44 |
 
 **Patterns used:**
 - Abstract contract test — `ControllableContractTest`, `ManageableContractTest` run the same assertions for every implementation via JUnit 5 inheritance
