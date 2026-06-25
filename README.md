@@ -100,6 +100,88 @@ mvn exec:java -Dexec.mainClass=org.example.InteractiveTaskManagerDemo
 
 ---
 
+## Interactive Demos
+
+Each demo runs in a loop, reads input from the console via `InputHelper` (automatic retry on invalid input, `maxRetries=3`), and exits cleanly on `0`.
+
+### Smart Home
+
+```
+━━━ Главное меню ━━━
+  1. Добавить устройство
+  2. Список устройств
+  3. Управление устройством
+  4. Управление комнатой
+  5. Статистика
+  0. Выход
+```
+
+- **Add device** — pick type (`SmartLight` / `SmartThermostat` / `SmartTV`) via numbered list, enter name, pick room (`RoomType` enum), optionally turn on immediately.
+- **Control device** — device-specific sub-menu: brightness ± (Light), temperature ± (Thermostat), volume ± and channel navigation (TV), or delete with confirmation.
+- **Control room** — select a `RoomType`, turn all devices in that room on or off at once.
+- **Stats** — `HomeStats`: total devices registered, total turn-on / turn-off events.
+
+`InputHelper` methods used: `readNonBlank` · `readInt(min,max)` · `readEnum` · `readBoolean`
+
+---
+
+### Coffee Shop
+
+```
+━━━ Меню кофейни ━━━
+  1. Посмотреть меню
+  2. Добавить позицию в меню
+  3. Принять заказ
+  4. История заказов
+  5. Статистика продаж
+  0. Закрыть кофейню
+```
+
+Starts with 4 default items (Espresso, Cappuccino, Green Tea, Croissant).
+
+- **Add item** — select type (`Coffee` / `Tea` / `Pastry`), enter name, set price with `readDouble(0.50, 50.0)`, configure strength/type/size (Coffee & Tea) or gluten-free/warm flags (Pastry). Final price = base × `Size.getPriceMultiplier()`.
+- **Take order** — enter customer name, optional free-text comment (`readLine`), pick items from numbered menu in a loop, review total, confirm with `readBoolean`.
+- **Stats** — `CoffeeShopStats`: total orders · items sold · revenue.
+
+`InputHelper` methods used: `readNonBlank` · `readDouble(min,max)` · `readInt(min,max)` · `readEnum` · `readBoolean` · `readLine`
+
+---
+
+### Task Manager
+
+Two-level navigation: main menu → project menu → task menu.
+
+```
+━━━ Task Manager ━━━        ←  main
+  1. Список проектов
+  2. Новый проект
+  3. Открыть проект
+  4. Найти проект по названию
+  5. Статистика
+  0. Выход
+
+━━━ Проект: … ━━━           ←  project
+  1. Список задач            5. Запустить проект
+  2. Добавить задачу         6. Завершить проект
+  3. Открыть задачу          7. Назначить/сменить менеджера
+  4. Сортировать задачи      8. Удалить проект
+
+━━━ Задача ━━━              ←  task
+  1. Изменить статус         4. Изменить дедлайн
+  2. Назначить исполнителя   5. Удалить задачу
+  3. Снять исполнителя
+```
+
+- **New project** — name (required), description (optional), optional manager assignment.
+- **Add task** — title, description, deadline (`YYYY-MM-DD` or Enter for none), optional assignee. Deadline uses `readLine` + manual `DateTimeParseException` loop because `InputHelper` has no `LocalDate` support.
+- **Sort tasks** — choose `Criterion` (`DUE_DATE` / `STATUS` / `TITLE`) via `readEnum`; sorted list printed via `Project.TaskComparator` (non-static inner class).
+- **Complete project** — warns about pending tasks, requires `readBoolean` confirmation; marks all tasks `DONE`.
+- **Find project** — case-insensitive search via `TaskManager.findByName`, offers to open immediately.
+
+`InputHelper` methods used: `readNonBlank` · `readLine` · `readInt(min,max)` · `readEnum` · `readBoolean`
+
+---
+
 ## Tests
 
 519 JUnit 5 tests covering every class, interface, and edge case.
