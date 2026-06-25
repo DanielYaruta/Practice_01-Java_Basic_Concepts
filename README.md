@@ -1,10 +1,8 @@
 # Java Basic Concepts — Practice 01
 
-[![Java CI](https://github.com/DanielYaruta/Practice_01-Java_Basic_Concepts/actions/workflows/maven.yml/badge.svg)](https://github.com/DanielYaruta/Practice_01-Java_Basic_Concepts/actions/workflows/maven.yml)
 [![Java](https://img.shields.io/badge/Java-17-ED8B00?logo=openjdk&logoColor=white)](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
 [![Maven](https://img.shields.io/badge/Maven-3.x-C71A36?logo=apachemaven&logoColor=white)](https://maven.apache.org/)
 [![JUnit 5](https://img.shields.io/badge/JUnit-5.10-25A162?logo=junit5&logoColor=white)](https://junit.org/junit5/)
-[![Tests](https://img.shields.io/badge/tests-519%20passed-brightgreen)](#тесты)
 
 Три независимых Java-симулятора, охватывающих основные концепции ООП из типичного курса по Java: абстрактные классы, интерфейсы, наследование, вложенные классы, перечисления, валидация и интерактивный ввод с консоли.
 
