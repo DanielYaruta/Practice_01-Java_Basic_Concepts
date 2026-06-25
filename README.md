@@ -86,20 +86,6 @@ src/test/java/org/example/
 
 ---
 
-## Running
-
-```bash
-# Run all 519 tests
-mvn test
-
-# Interactive demos (use the console to navigate menus)
-mvn exec:java -Dexec.mainClass=org.example.InteractiveSmartHomeDemo
-mvn exec:java -Dexec.mainClass=org.example.InteractiveCoffeeShopDemo
-mvn exec:java -Dexec.mainClass=org.example.InteractiveTaskManagerDemo
-```
-
----
-
 ## Interactive Demos
 
 Each demo runs in a loop, reads input from the console via `InputHelper` (automatic retry on invalid input, `maxRetries=3`), and exits cleanly on `0`.
