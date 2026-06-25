@@ -7,18 +7,9 @@ import org.example.util.InputHelperException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Интерактивное демо умного дома.
- * Показывает все методы InputHelper в реальном сценарии:
- *   readNonBlank  — адрес дома, имя устройства
- *   readInt(min,max) — пункты меню, выбор устройства
- *   readDouble    — (резерв: не нужен для этих объектов)
- *   readEnum      — тип устройства, тип комнаты
- *   readBoolean   — подтверждение включения / удаления
- */
 public class InteractiveSmartHomeDemo {
 
-    // ── Тип устройства как внутренний enum (toString переопределён для readEnum) ──
+    // toString overridden so readEnum shows "Smart Light" instead of "LIGHT"
     enum DeviceType {
         LIGHT("Smart Light"),
         THERMOSTAT("Smart Thermostat"),
@@ -29,15 +20,13 @@ public class InteractiveSmartHomeDemo {
         @Override public String toString() { return label; }
     }
 
-    private final InputHelper     input;
-    private       SmartHome       home;
+    private final InputHelper       input;
+    private       SmartHome         home;
     private final List<SmartDevice> devices = new ArrayList<>();
 
     public InteractiveSmartHomeDemo(InputHelper input) {
         this.input = input;
     }
-
-    // ── Точка входа ────────────────────────────────────────────────────────────
 
     public static void main(String[] args) {
         System.out.println("╔══════════════════════════════════╗");
@@ -45,7 +34,6 @@ public class InteractiveSmartHomeDemo {
         System.out.println("╚══════════════════════════════════╝");
         System.out.println("(maxRetries=3: каждый ввод даёт 4 попытки)\n");
 
-        // InputHelper создаётся через try-with-resources — Scanner закроется автоматически
         try (InputHelper ih = new InputHelper(System.in, System.out, 3)) {
             new InteractiveSmartHomeDemo(ih).run();
         } catch (InputHelperException e) {
@@ -54,10 +42,7 @@ public class InteractiveSmartHomeDemo {
         }
     }
 
-    // ── Запуск ─────────────────────────────────────────────────────────────────
-
     public void run() {
-        // readNonBlank: пустой/пробельный адрес → повтор с сообщением об ошибке
         String address = input.readNonBlank("Адрес дома: ");
         home = new SmartHome(address);
         System.out.println();
@@ -65,7 +50,6 @@ public class InteractiveSmartHomeDemo {
         boolean running = true;
         while (running) {
             printMainMenu();
-            // readInt с диапазоном [0..5]: буква или число вне диапазона → повтор
             int choice = input.readInt("Выбор: ", 0, 5);
             System.out.println();
             switch (choice) {
@@ -79,8 +63,6 @@ public class InteractiveSmartHomeDemo {
         }
     }
 
-    // ── Главное меню ───────────────────────────────────────────────────────────
-
     private void printMainMenu() {
         System.out.println("━━━ Главное меню ━━━");
         System.out.println("  1. Добавить устройство");
@@ -91,17 +73,10 @@ public class InteractiveSmartHomeDemo {
         System.out.println("  0. Выход");
     }
 
-    // ── 1. Добавить устройство ─────────────────────────────────────────────────
-
     private void addDevice() {
-        // readEnum: показывает нумерованный список DeviceType, принимает 1-3
         DeviceType type = input.readEnum("Тип устройства:", DeviceType.class);
-
-        // readNonBlank: имя не может быть пустым
-        String name = input.readNonBlank("Название устройства: ");
-
-        // readEnum: показывает все RoomType (Living Room, Bedroom и т.д.)
-        RoomType room = input.readEnum("Комната:", RoomType.class);
+        String name     = input.readNonBlank("Название устройства: ");
+        RoomType room   = input.readEnum("Комната:", RoomType.class);
 
         SmartDevice device = switch (type) {
             case LIGHT      -> new SmartLight(name, room);
@@ -109,7 +84,6 @@ public class InteractiveSmartHomeDemo {
             case TV         -> new SmartTV(name, room);
         };
 
-        // readBoolean: y/yes/n/no, любой регистр; иначе повтор
         if (input.readBoolean("Включить сейчас?")) {
             device.turnOn();
         }
@@ -118,8 +92,6 @@ public class InteractiveSmartHomeDemo {
         devices.add(device);
         System.out.println();
     }
-
-    // ── 2. Список устройств ────────────────────────────────────────────────────
 
     private void listDevices() {
         if (devices.isEmpty()) {
@@ -137,8 +109,6 @@ public class InteractiveSmartHomeDemo {
         System.out.printf("Активно: %d/%d%n%n", home.countActiveDevices(), devices.size());
     }
 
-    // ── 3. Управление устройством ──────────────────────────────────────────────
-
     private void controlDevice() {
         if (devices.isEmpty()) {
             System.out.println("Нет устройств. Сначала добавьте.\n");
@@ -146,7 +116,6 @@ public class InteractiveSmartHomeDemo {
         }
         listDevices();
 
-        // readInt с диапазоном: нельзя выбрать несуществующий номер
         int idx = input.readInt("Выберите устройство: ", 1, devices.size()) - 1;
         SmartDevice device = devices.get(idx);
 
@@ -184,7 +153,6 @@ public class InteractiveSmartHomeDemo {
             case 5 -> { if (device instanceof SmartTV tv) tv.nextChannel(); }
             case 6 -> { if (device instanceof SmartTV tv) tv.prevChannel(); }
             case 9 -> {
-                // readBoolean: подтверждение перед удалением
                 if (input.readBoolean("Удалить \"" + device.getName() + "\"?")) {
                     home.removeDevice(device);
                     devices.remove(device);
@@ -197,10 +165,7 @@ public class InteractiveSmartHomeDemo {
         System.out.println();
     }
 
-    // ── 4. Управление комнатой ─────────────────────────────────────────────────
-
     private void controlRoom() {
-        // readEnum: выбор комнаты из RoomType
         RoomType room = input.readEnum("Выберите комнату:", RoomType.class);
 
         List<SmartDevice> inRoom = home.getDevicesByRoom(room);

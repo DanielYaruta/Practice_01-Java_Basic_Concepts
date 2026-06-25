@@ -6,33 +6,16 @@ import org.example.util.InputHelperException;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Интерактивное демо системы управления задачами.
- *
- * InputHelper-методы, задействованные здесь:
- *   readNonBlank  — названия проектов/задач, имена менеджеров/исполнителей
- *   readLine      — описания (могут быть пустыми)
- *   readInt(min,max) — пункты меню, выбор проекта/задачи
- *   readEnum      — TaskStatus (To Do / In Progress / Done)
- *                   TaskComparator.Criterion (DUE_DATE / STATUS / TITLE)
- *   readBoolean   — подтверждение удаления, назначения, завершения проекта
- *
- * readDate() — демонстрирует комбинирование readLine с ручной валидацией,
- * когда InputHelper не знает о специфическом формате (ГГГГ-ММ-ДД).
- */
 public class InteractiveTaskManagerDemo {
 
-    private final InputHelper  input;
-    private final TaskManager  manager = new TaskManager();
+    private final InputHelper input;
+    private final TaskManager manager = new TaskManager();
 
     public InteractiveTaskManagerDemo(InputHelper input) {
         this.input = input;
     }
-
-    // ── Точка входа ────────────────────────────────────────────────────────────
 
     public static void main(String[] args) {
         System.out.println("╔══════════════════════════════════════╗");
@@ -49,10 +32,6 @@ public class InteractiveTaskManagerDemo {
     public void run() {
         mainMenu();
     }
-
-    // ══════════════════════════════════════════════════════════════════════════
-    // Главное меню
-    // ══════════════════════════════════════════════════════════════════════════
 
     private void mainMenu() {
         boolean running = true;
@@ -79,8 +58,6 @@ public class InteractiveTaskManagerDemo {
         }
     }
 
-    // ── 1. Список проектов ─────────────────────────────────────────────────────
-
     private void listProjects() {
         List<Project> projects = manager.getProjects();
         if (projects.isEmpty()) {
@@ -93,28 +70,18 @@ public class InteractiveTaskManagerDemo {
         }
     }
 
-    // ── 2. Новый проект ────────────────────────────────────────────────────────
-
     private void addProject() {
-        // readNonBlank: название обязательно
         String name = input.readNonBlank("Название проекта: ");
-
-        // readLine: описание может быть пустым
         String desc = input.readLine("Описание (Enter — пропустить): ").trim();
 
         Project project = new Project(name, desc);
 
-        // readBoolean: нужен ли менеджер сразу?
         if (input.readBoolean("Назначить менеджера сейчас?")) {
-            // readNonBlank: имя менеджера не может быть пустым
-            String mgr = input.readNonBlank("Имя менеджера: ");
-            project.assign(mgr);
+            project.assign(input.readNonBlank("Имя менеджера: "));
         }
 
         manager.addProject(project);
     }
-
-    // ── 3. Открыть проект (выбор из списка) ───────────────────────────────────
 
     private void selectAndOpenProject() {
         List<Project> projects = manager.getProjects();
@@ -123,22 +90,15 @@ public class InteractiveTaskManagerDemo {
             return;
         }
         listProjects();
-
-        // readInt с диапазоном: нельзя выбрать несуществующий номер
         int idx = input.readInt("Выберите проект: ", 1, projects.size()) - 1;
         projectMenu(projects.get(idx));
     }
 
-    // ── 4. Найти по названию ───────────────────────────────────────────────────
-
     private void findProject() {
-        // readNonBlank: пустой поисковой запрос недопустим
         String name = input.readNonBlank("Название для поиска: ");
-
         manager.findByName(name).ifPresentOrElse(
                 p -> {
                     System.out.println("Найден: " + p);
-                    // readBoolean: сразу открыть?
                     if (input.readBoolean("Открыть проект?")) {
                         System.out.println();
                         projectMenu(p);
@@ -147,10 +107,6 @@ public class InteractiveTaskManagerDemo {
                 () -> System.out.println("Проект не найден: \"" + name + "\"")
         );
     }
-
-    // ══════════════════════════════════════════════════════════════════════════
-    // Меню проекта
-    // ══════════════════════════════════════════════════════════════════════════
 
     private void projectMenu(Project project) {
         boolean open = true;
@@ -191,31 +147,20 @@ public class InteractiveTaskManagerDemo {
         }
     }
 
-    // ── 2. Добавить задачу ─────────────────────────────────────────────────────
-
     private void addTask(Project project) {
-        // readNonBlank: название задачи
         String title = input.readNonBlank("Название задачи: ");
-
-        // readLine: описание (может быть пустым)
-        String desc = input.readLine("Описание (Enter — пропустить): ").trim();
-
-        // readDate: кастомный метод с ручным циклом на основе readLine
+        String desc  = input.readLine("Описание (Enter — пропустить): ").trim();
         LocalDate due = readDate("Дедлайн ГГГГ-ММ-ДД (Enter — без дедлайна): ");
 
         Task task = new Task(title, desc, due);
 
-        // readBoolean + readNonBlank: назначение исполнителя
         if (input.readBoolean("Назначить исполнителя?")) {
-            String assignee = input.readNonBlank("Имя исполнителя: ");
-            task.setAssignee(assignee);
+            task.setAssignee(input.readNonBlank("Имя исполнителя: "));
         }
 
         project.addTask(task);
         System.out.println("Добавлена: " + task);
     }
-
-    // ── 3. Открыть задачу ─────────────────────────────────────────────────────
 
     private void selectAndOpenTask(Project project) {
         List<Task> tasks = project.getTasks();
@@ -227,29 +172,22 @@ public class InteractiveTaskManagerDemo {
         for (int i = 0; i < tasks.size(); i++) {
             System.out.printf("  %d. %s%n", i + 1, tasks.get(i));
         }
-
         int idx = input.readInt("Выберите задачу: ", 1, tasks.size()) - 1;
         System.out.println();
         taskMenu(project, tasks.get(idx));
     }
-
-    // ── 4. Сортировать задачи ─────────────────────────────────────────────────
 
     private void sortTasks(Project project) {
         if (project.getTasks().isEmpty()) {
             System.out.println("Нет задач для сортировки.");
             return;
         }
-        // readEnum: Criterion — DUE_DATE, STATUS, TITLE
         Project.TaskComparator.Criterion criterion =
                 input.readEnum("Сортировать по:", Project.TaskComparator.Criterion.class);
-
         List<Task> sorted = project.getSortedTasks(criterion);
         System.out.println("─── Результат ───");
         sorted.forEach(t -> System.out.println("  " + t));
     }
-
-    // ── 6. Завершить проект ───────────────────────────────────────────────────
 
     private void confirmAndComplete(Project project) {
         long pending = project.countByStatus(TaskStatus.TODO)
@@ -257,7 +195,6 @@ public class InteractiveTaskManagerDemo {
         if (pending > 0) {
             System.out.printf("Внимание: %d задач будут помечены как DONE.%n", pending);
         }
-        // readBoolean: предупреждение перед деструктивным действием
         if (input.readBoolean("Завершить проект «" + project.getName() + "»?")) {
             project.complete();
         } else {
@@ -265,18 +202,12 @@ public class InteractiveTaskManagerDemo {
         }
     }
 
-    // ── 7. Назначить/сменить менеджера ────────────────────────────────────────
-
     private void reassignManager(Project project) {
         if (project.getManager() != null) {
             System.out.println("Текущий менеджер: " + project.getManager());
         }
-        // readNonBlank: пустое имя недопустимо
-        String mgr = input.readNonBlank("Новый менеджер: ");
-        project.assign(mgr);
+        project.assign(input.readNonBlank("Новый менеджер: "));
     }
-
-    // ── 8. Удалить проект ─────────────────────────────────────────────────────
 
     private boolean removeProject(Project project) {
         if (input.readBoolean("Удалить проект «" + project.getName() + "»?")) {
@@ -286,10 +217,6 @@ public class InteractiveTaskManagerDemo {
         System.out.println("Отменено.");
         return false;
     }
-
-    // ══════════════════════════════════════════════════════════════════════════
-    // Меню задачи
-    // ══════════════════════════════════════════════════════════════════════════
 
     private void taskMenu(Project project, Task task) {
         boolean open = true;
@@ -318,7 +245,6 @@ public class InteractiveTaskManagerDemo {
     }
 
     private void changeTaskStatus(Task task) {
-        // readEnum: показывает "To Do / In Progress / Done"
         TaskStatus status = input.readEnum("Новый статус:", TaskStatus.class);
         task.setStatus(status);
         System.out.println("Статус → " + status);
@@ -329,17 +255,13 @@ public class InteractiveTaskManagerDemo {
         if (task.isAssigned()) {
             System.out.println("Текущий исполнитель: " + task.getAssignee());
         }
-        // readNonBlank: имя исполнителя
-        String name = input.readNonBlank("Имя исполнителя: ");
-        task.setAssignee(name);
-        System.out.println("Назначен: " + name);
+        task.setAssignee(input.readNonBlank("Имя исполнителя: "));
+        System.out.println("Назначен: " + task.getAssignee());
     }
 
     private void changeTaskDueDate(Task task) {
         System.out.println("Текущий дедлайн: "
                 + (task.getDueDate() != null ? task.getDueDate() : "не задан"));
-
-        // readDate: кастомный метод — Enter очищает дедлайн
         LocalDate due = readDate("Новый дедлайн ГГГГ-ММ-ДД (Enter — убрать): ");
         task.setDueDate(due);
         System.out.println("Дедлайн → " + (due != null ? due : "не задан"));
@@ -355,21 +277,13 @@ public class InteractiveTaskManagerDemo {
         return false;
     }
 
-    // ══════════════════════════════════════════════════════════════════════════
-    // readDate — readLine + ручная валидация формата
-    //
-    // InputHelper не знает о LocalDate, поэтому комбинируем:
-    //   readLine — получаем сырую строку без retry
-    //   ручной цикл — повторяем при DateTimeParseException
-    //   пустая строка — означает «без дедлайна»
-    // ══════════════════════════════════════════════════════════════════════════
-
+    // InputHelper не знает о LocalDate — используем readLine + ручной DateTimeParseException.
     private LocalDate readDate(String prompt) {
         while (true) {
             String raw = input.readLine(prompt).trim();
             if (raw.isEmpty()) return null;
             try {
-                return LocalDate.parse(raw);      // ожидает ISO: 2025-12-31
+                return LocalDate.parse(raw);
             } catch (DateTimeParseException e) {
                 System.out.println("  Error: неверный формат — используйте ГГГГ-ММ-ДД.");
             }

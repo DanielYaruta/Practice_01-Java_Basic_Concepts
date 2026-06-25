@@ -98,8 +98,6 @@ public class SmartHome {
         return stats;
     }
 
-    // --- Nested static class ---
-
     public static class HomeStats {
 
         private int totalDevices;

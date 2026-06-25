@@ -76,10 +76,6 @@ public class CoffeeShop {
         return menu;
     }
 
-    // -------------------------------------------------------------------------
-    // Nested class — has access to the enclosing CoffeeShop instance
-    // -------------------------------------------------------------------------
-
     public class Order {
 
         private final String customerName;
@@ -107,10 +103,6 @@ public class CoffeeShop {
         public LocalDateTime getOrderTime(){ return orderTime; }
         public String getShopName()        { return CoffeeShop.this.name; }
     }
-
-    // -------------------------------------------------------------------------
-    // Static nested class — no reference to outer CoffeeShop instance
-    // -------------------------------------------------------------------------
 
     public static class CoffeeShopStats {
 

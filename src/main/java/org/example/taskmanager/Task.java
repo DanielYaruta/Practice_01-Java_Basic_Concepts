@@ -19,15 +19,11 @@ public class Task {
         this.status      = TaskStatus.TODO;
     }
 
-    // --- Getters ---
-
     public String     getTitle()       { return title; }
     public String     getDescription() { return description; }
     public LocalDate  getDueDate()     { return dueDate; }
     public TaskStatus getStatus()      { return status; }
     public String     getAssignee()    { return assignee; }
-
-    // --- Setters ---
 
     public void setTitle(String title)             { this.title = Validate.requireNonBlank(title, "title"); }
     public void setDescription(String description) { this.description = Validate.requireNonNull(description, "description"); }

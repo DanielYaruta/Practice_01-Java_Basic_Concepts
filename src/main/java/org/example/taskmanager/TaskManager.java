@@ -55,10 +55,6 @@ public class TaskManager {
         return new ProjectStats(projects);
     }
 
-    // -------------------------------------------------------------------------
-    // Static nested class — no reference to any TaskManager instance
-    // -------------------------------------------------------------------------
-
     public static class ProjectStats {
 
         private final int    totalProjects;

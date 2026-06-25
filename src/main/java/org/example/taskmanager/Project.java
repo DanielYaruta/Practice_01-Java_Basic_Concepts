@@ -24,8 +24,6 @@ public class Project implements Manageable {
         this.tasks       = new ArrayList<>();
     }
 
-    // --- Manageable ---
-
     @Override
     public void assign(String manager) {
         this.manager = Validate.requireNonBlank(manager, "manager");
@@ -48,8 +46,6 @@ public class Project implements Manageable {
         status = TaskStatus.DONE;
         System.out.println("Project '" + name + "' completed. All tasks marked as DONE.");
     }
-
-    // --- Task management ---
 
     public void addTask(Task task) {
         Validate.requireNonNull(task, "task");
@@ -74,8 +70,6 @@ public class Project implements Manageable {
         return tasks.stream().filter(t -> t.getStatus() == status).count();
     }
 
-    // --- Getters ---
-
     public String     getName()        { return name; }
     public String     getDescription() { return description; }
     public TaskStatus getStatus()      { return status; }
@@ -97,10 +91,6 @@ public class Project implements Manageable {
                 manager != null ? manager : "—");
     }
 
-    // -------------------------------------------------------------------------
-    // Non-static inner class — has implicit reference to the enclosing Project
-    // -------------------------------------------------------------------------
-
     public class TaskComparator implements Comparator<Task> {
 
         public enum Criterion { DUE_DATE, STATUS, TITLE }
@@ -121,7 +111,6 @@ public class Project implements Manageable {
             };
         }
 
-        // Accesses enclosing Project.this — demonstrates non-static inner class
         public String describe() {
             return "  [" + Project.this.name + "] sorting by " + criterion;
         }
