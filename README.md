@@ -4,45 +4,47 @@
 [![Java](https://img.shields.io/badge/Java-17-ED8B00?logo=openjdk&logoColor=white)](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
 [![Maven](https://img.shields.io/badge/Maven-3.x-C71A36?logo=apachemaven&logoColor=white)](https://maven.apache.org/)
 [![JUnit 5](https://img.shields.io/badge/JUnit-5.10-25A162?logo=junit5&logoColor=white)](https://junit.org/junit5/)
-[![Tests](https://img.shields.io/badge/tests-519%20passed-brightgreen)](#tests)
+[![Tests](https://img.shields.io/badge/tests-519%20passed-brightgreen)](#тесты)
 
-Three independent Java simulators that cover the core OOP concepts taught in a typical Java fundamentals course — abstract classes, interfaces, inheritance, nested classes, enums, validation, and interactive console I/O.
+Три независимых Java-симулятора, охватывающих основные концепции ООП из типичного курса по Java: абстрактные классы, интерфейсы, наследование, вложенные классы, перечисления, валидация и интерактивный ввод с консоли.
 
 ---
 
-## Simulators
+## Симуляторы
 
-| Package | Domain | Entry point |
+| Пакет | Предметная область | Точка входа |
 |---|---|---|
-| [`smarthome`](#smarthome) | Smart home control | `InteractiveSmartHomeDemo` |
-| [`coffeeshop`](#coffeeshop) | Coffee shop ordering | `InteractiveCoffeeShopDemo` |
-| [`taskmanager`](#taskmanager) | Project & task tracking | `InteractiveTaskManagerDemo` |
+| [`smarthome`](#smarthome) | Управление умным домом | `InteractiveSmartHomeDemo` |
+| [`coffeeshop`](#coffeeshop) | Заказы в кофейне | `InteractiveCoffeeShopDemo` |
+| [`taskmanager`](#taskmanager) | Управление проектами и задачами | `InteractiveTaskManagerDemo` |
 
 ---
 
-## Concepts Covered
+## Концепции
 
-### OOP Structure
-| Concept | Where |
-|---|---|
-| Abstract class | `SmartDevice`, `MenuItem` |
-| Interface | `Controllable`, `Preparable`, `Manageable` |
-| Inheritance | `SmartLight`, `SmartThermostat`, `SmartTV` / `Coffee`, `Tea`, `Pastry` |
-| `final` methods | Business rules in `SmartDevice`, `Task` that subclasses must not override |
-| Non-static inner class | `CoffeeShop.Order` (accesses `CoffeeShop.this.name`), `Project.TaskComparator` |
-| Static nested class | `SmartHome.HomeStats`, `CoffeeShop.CoffeeShopStats`, `TaskManager.ProjectStats` |
-| Enum with fields | `RoomType`, `Size`, `TaskStatus`, `Coffee.Strength`, `Tea.TeaType` |
+### Структура ООП
 
-### Validation & I/O
-| Component | Role |
+| Концепция | Где применяется |
 |---|---|
-| `Validate` | Shared utility — `requireNonBlank`, `requireNonNegative`, `requireNonNull` |
-| `InputHelper` | Console input with automatic retry on invalid input |
-| `InputHelperException` | Thrown when `maxRetries` is exhausted or input stream ends |
+| Абстрактный класс | `SmartDevice`, `MenuItem` |
+| Интерфейс | `Controllable`, `Preparable`, `Manageable` |
+| Наследование | `SmartLight`, `SmartThermostat`, `SmartTV` / `Coffee`, `Tea`, `Pastry` |
+| `final`-методы | Бизнес-правила в `SmartDevice`, `Task` — подклассы не могут переопределить |
+| Нестатический внутренний класс | `CoffeeShop.Order` (обращается к `CoffeeShop.this.name`), `Project.TaskComparator` |
+| Статический вложенный класс | `SmartHome.HomeStats`, `CoffeeShop.CoffeeShopStats`, `TaskManager.ProjectStats` |
+| Enum с полями | `RoomType`, `Size`, `TaskStatus`, `Coffee.Strength`, `Tea.TeaType` |
+
+### Валидация и ввод
+
+| Компонент | Роль |
+|---|---|
+| `Validate` | Общая утилита — `requireNonBlank`, `requireNonNegative`, `requireNonNull` |
+| `InputHelper` | Консольный ввод с автоматическим повтором при неверном вводе |
+| `InputHelperException` | Бросается при исчерпании `maxRetries` или конце потока ввода |
 
 ---
 
-## Project Structure
+## Структура проекта
 
 ```
 src/
@@ -86,9 +88,9 @@ src/test/java/org/example/
 
 ---
 
-## Interactive Demos
+## Интерактивные демо
 
-Each demo runs in a loop, reads input from the console via `InputHelper` (automatic retry on invalid input, `maxRetries=3`), and exits cleanly on `0`.
+Каждое демо работает в цикле, читает ввод через `InputHelper` (автоповтор при неверном вводе, `maxRetries=3`) и завершается по `0`.
 
 ### Smart Home
 
@@ -102,12 +104,12 @@ Each demo runs in a loop, reads input from the console via `InputHelper` (automa
   0. Выход
 ```
 
-- **Add device** — pick type (`SmartLight` / `SmartThermostat` / `SmartTV`) via numbered list, enter name, pick room (`RoomType` enum), optionally turn on immediately.
-- **Control device** — device-specific sub-menu: brightness ± (Light), temperature ± (Thermostat), volume ± and channel navigation (TV), or delete with confirmation.
-- **Control room** — select a `RoomType`, turn all devices in that room on or off at once.
-- **Stats** — `HomeStats`: total devices registered, total turn-on / turn-off events.
+- **Добавить устройство** — выбор типа (`SmartLight` / `SmartThermostat` / `SmartTV`) из нумерованного списка, ввод имени, выбор комнаты (`RoomType`), опциональное включение сразу.
+- **Управление устройством** — подменю, специфичное для типа: яркость ± (свет), температура ± (термостат), громкость ± и навигация по каналам (ТВ), удаление с подтверждением.
+- **Управление комнатой** — выбор `RoomType`, включение или выключение всех устройств в комнате разом.
+- **Статистика** — `HomeStats`: зарегистрировано устройств, событий включения / выключения.
 
-`InputHelper` methods used: `readNonBlank` · `readInt(min,max)` · `readEnum` · `readBoolean`
+Методы `InputHelper`: `readNonBlank` · `readInt(min,max)` · `readEnum` · `readBoolean`
 
 ---
 
@@ -123,22 +125,22 @@ Each demo runs in a loop, reads input from the console via `InputHelper` (automa
   0. Закрыть кофейню
 ```
 
-Starts with 4 default items (Espresso, Cappuccino, Green Tea, Croissant).
+Стартует с 4 позициями по умолчанию (Espresso, Cappuccino, Green Tea, Croissant).
 
-- **Add item** — select type (`Coffee` / `Tea` / `Pastry`), enter name, set price with `readDouble(0.50, 50.0)`, configure strength/type/size (Coffee & Tea) or gluten-free/warm flags (Pastry). Final price = base × `Size.getPriceMultiplier()`.
-- **Take order** — enter customer name, optional free-text comment (`readLine`), pick items from numbered menu in a loop, review total, confirm with `readBoolean`.
-- **Stats** — `CoffeeShopStats`: total orders · items sold · revenue.
+- **Добавить позицию** — тип (`Coffee` / `Tea` / `Pastry`), название, цена через `readDouble(0.50, 50.0)`, крепость/сорт/размер (кофе и чай) или флаги без глютена/тёплым (выпечка). Итоговая цена = base × `Size.getPriceMultiplier()`.
+- **Принять заказ** — имя клиента, опциональный комментарий (`readLine`), выбор позиций из меню в цикле, просмотр итога, подтверждение через `readBoolean`.
+- **Статистика** — `CoffeeShopStats`: оформлено заказов · продано позиций · выручка.
 
-`InputHelper` methods used: `readNonBlank` · `readDouble(min,max)` · `readInt(min,max)` · `readEnum` · `readBoolean` · `readLine`
+Методы `InputHelper`: `readNonBlank` · `readDouble(min,max)` · `readInt(min,max)` · `readEnum` · `readBoolean` · `readLine`
 
 ---
 
 ### Task Manager
 
-Two-level navigation: main menu → project menu → task menu.
+Двухуровневая навигация: главное меню → меню проекта → меню задачи.
 
 ```
-━━━ Task Manager ━━━        ←  main
+━━━ Task Manager ━━━        ←  главное
   1. Список проектов
   2. Новый проект
   3. Открыть проект
@@ -146,24 +148,22 @@ Two-level navigation: main menu → project menu → task menu.
   5. Статистика
   0. Выход
 
-━━━ Проект: … ━━━           ←  project
+━━━ Проект: … ━━━           ←  проект
   1. Список задач            5. Запустить проект
   2. Добавить задачу         6. Завершить проект
   3. Открыть задачу          7. Назначить/сменить менеджера
   4. Сортировать задачи      8. Удалить проект
 
-━━━ Задача ━━━              ←  task
+━━━ Задача ━━━              ←  задача
   1. Изменить статус         4. Изменить дедлайн
   2. Назначить исполнителя   5. Удалить задачу
   3. Снять исполнителя
 ```
 
-- **New project** — name (required), description (optional), optional manager assignment.
-- **Add task** — title, description, deadline (`YYYY-MM-DD` or Enter for none), optional assignee. Deadline uses `readLine` + manual `DateTimeParseException` loop because `InputHelper` has no `LocalDate` support.
-- **Sort tasks** — choose `Criterion` (`DUE_DATE` / `STATUS` / `TITLE`) via `readEnum`; sorted list printed via `Project.TaskComparator` (non-static inner class).
-- **Complete project** — warns about pending tasks, requires `readBoolean` confirmation; marks all tasks `DONE`.
-- **Find project** — case-insensitive search via `TaskManager.findByName`, offers to open immediately.
+- **Новый проект** — название (обязательно), описание (опционально), опциональное назначение менеджера.
+- **Добавить задачу** — название, описание, дедлайн (`ГГГГ-ММ-ДД` или Enter без дедлайна), исполнитель. Дедлайн читается через `readLine` + ручной цикл с `DateTimeParseException`, так как `InputHelper` не знает о `LocalDate`.
+- **Сортировать задачи** — выбор критерия (`DUE_DATE` / `STATUS` / `TITLE`) через `readEnum`; сортировка через `Project.TaskComparator` (нестатический внутренний класс).
+- **Завершить проект** — предупреждение о незавершённых задачах, подтверждение через `readBoolean`; все задачи переводятся в `DONE`.
+- **Найти проект** — поиск без учёта регистра через `TaskManager.findByName`, предложение открыть сразу.
 
-`InputHelper` methods used: `readNonBlank` · `readLine` · `readInt(min,max)` · `readEnum` · `readBoolean`
-
----
+Методы `InputHelper`: `readNonBlank` · `readLine` · `readInt(min,max)` · `readEnum` · `readBoolean`
