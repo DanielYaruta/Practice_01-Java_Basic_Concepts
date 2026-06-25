@@ -136,6 +136,17 @@ class InputHelperTest {
         }
 
         @Test
+        void minGreaterThanMax_errorMessageUsesIntFormat() {
+            try (InputHelper h = h("1\n")) {
+                IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
+                        () -> h.readInt("Enter: ", 10, 1));
+                assertTrue(ex.getMessage().contains("10"), "message should show 10, not 10.0");
+                assertTrue(ex.getMessage().contains("1"),  "message should show 1, not 1.0");
+                assertFalse(ex.getMessage().contains("10.0"), "message must not show double format");
+            }
+        }
+
+        @Test
         void exhaustedInput_throwsInputHelperException() {
             // scanner runs out before valid input
             try (InputHelper h = helper("", InputHelper.UNLIMITED)) {

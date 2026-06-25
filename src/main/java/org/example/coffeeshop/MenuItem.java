@@ -22,6 +22,11 @@ public abstract class MenuItem {
 
     public abstract String getDescription();
 
+    protected static double computePrice(double basePrice, Size size) {
+        Validate.requireNonNegative(basePrice, "basePrice");
+        return basePrice * Validate.requireNonNull(size, "size").getPriceMultiplier();
+    }
+
     @Override
     public String toString() {
         return String.format("%-22s %s", name, getDescription());

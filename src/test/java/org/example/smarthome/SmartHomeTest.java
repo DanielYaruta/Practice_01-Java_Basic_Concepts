@@ -182,4 +182,34 @@ class SmartHomeTest {
         assertEquals(4, home.getStats().getTurnOnCount());
         assertEquals(2, home.getStats().getTurnOffCount());
     }
+
+    @Test
+    void turnOnAll_alreadyOn_doesNotIncrementTurnOnCount() {
+        home.addDevice(livingLight);
+        home.turnOnAll(); // OFF → ON: count = 1
+        home.turnOnAll(); // already ON: count stays 1
+        assertEquals(1, home.getStats().getTurnOnCount());
+    }
+
+    @Test
+    void turnOffAll_alreadyOff_doesNotIncrementTurnOffCount() {
+        home.addDevice(livingLight);
+        home.turnOffAll(); // already OFF: count stays 0
+        assertEquals(0, home.getStats().getTurnOffCount());
+    }
+
+    @Test
+    void turnOnByRoom_alreadyOn_doesNotIncrementTurnOnCount() {
+        home.addDevice(livingLight);
+        home.turnOnByRoom(RoomType.LIVING_ROOM); // OFF → ON: count = 1
+        home.turnOnByRoom(RoomType.LIVING_ROOM); // already ON: count stays 1
+        assertEquals(1, home.getStats().getTurnOnCount());
+    }
+
+    @Test
+    void turnOffByRoom_alreadyOff_doesNotIncrementTurnOffCount() {
+        home.addDevice(livingLight);
+        home.turnOffByRoom(RoomType.LIVING_ROOM); // already OFF: count stays 0
+        assertEquals(0, home.getStats().getTurnOffCount());
+    }
 }

@@ -36,16 +36,18 @@ public class SmartHome {
     public void turnOnAll() {
         System.out.println("--- Turning ON all devices ---");
         for (SmartDevice device : devices) {
+            boolean wasOff = !device.isOn();
             device.turnOn();
-            stats.turnOnCount++;
+            if (wasOff) stats.turnOnCount++;
         }
     }
 
     public void turnOffAll() {
         System.out.println("--- Turning OFF all devices ---");
         for (SmartDevice device : devices) {
+            boolean wasOn = device.isOn();
             device.turnOff();
-            stats.turnOffCount++;
+            if (wasOn) stats.turnOffCount++;
         }
     }
 
@@ -55,8 +57,9 @@ public class SmartHome {
         devices.stream()
                 .filter(d -> d.getRoom() == room)
                 .forEach(d -> {
+                    boolean wasOff = !d.isOn();
                     d.turnOn();
-                    stats.turnOnCount++;
+                    if (wasOff) stats.turnOnCount++;
                 });
     }
 
@@ -66,8 +69,9 @@ public class SmartHome {
         devices.stream()
                 .filter(d -> d.getRoom() == room)
                 .forEach(d -> {
+                    boolean wasOn = d.isOn();
                     d.turnOff();
-                    stats.turnOffCount++;
+                    if (wasOn) stats.turnOffCount++;
                 });
     }
 

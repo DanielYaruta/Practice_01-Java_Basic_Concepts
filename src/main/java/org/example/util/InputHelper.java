@@ -175,6 +175,12 @@ public class InputHelper implements Closeable {
         out.println("  Error: " + message + ".");
     }
 
+    private static void requireValidRange(int min, int max) {
+        if (min > max) {
+            throw new IllegalArgumentException("min (" + min + ") must be <= max (" + max + ")");
+        }
+    }
+
     private static void requireValidRange(double min, double max) {
         if (min > max) {
             throw new IllegalArgumentException("min (" + min + ") must be <= max (" + max + ")");

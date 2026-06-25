@@ -26,11 +26,6 @@ public class Coffee extends MenuItem implements Preparable {
         this.size     = size; // validated in computePrice
     }
 
-    private static double computePrice(double basePrice, Size size) {
-        Validate.requireNonNegative(basePrice, "basePrice");
-        return basePrice * Validate.requireNonNull(size, "size").getPriceMultiplier();
-    }
-
     @Override
     public void prepare() {
         System.out.println("Preparing " + size + " " + name + "...");
